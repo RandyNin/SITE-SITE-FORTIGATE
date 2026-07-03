@@ -1,0 +1,38 @@
+ena
+conf t
+no ip domain-lookup
+hostname CLARO-ISP
+
+int gig0/0
+ip add dhcp
+no shut
+exit
+
+int gig0/1
+ip add 20.21.22.2 255.255.255.252
+no shut
+exit
+
+int gig0/2
+ip add 30.31.32.2 255.255.255.252
+no shut
+exit
+
+access-list 1 permit 20.21.22.0 0.0.0.3
+access-list 1 permit 30.31.32.0 0.0.0.3
+
+int ra gig0/1
+ip nat inside
+exit
+
+int ra gig0/2
+ip nat inside
+exit
+
+int gig0/0
+ip nat outside
+exit
+
+ip nat inside source list 1 interface gig0/0 overload
+
+do wr
